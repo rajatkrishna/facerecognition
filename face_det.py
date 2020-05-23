@@ -3,6 +3,7 @@ import glob
 import numpy as np
 import matplotlib.pyplot as plt
 import dlib
+import face_aligner
 
 image_file = "images/2020-05-20 02.14.24 1.jpg"
 keypoints_predictor = "keypoints_model/shape_predictor_68_face_landmarks.dat"
@@ -53,6 +54,7 @@ face_detector = dlib.get_frontal_face_detector()
 faces, scores, idx = face_detector.run(img, 1, 0.25)
 no_faces = len(faces)
 
+
 print("{} face(s) found in image {}".format(no_faces, image_file))
 
 bb_points = []
@@ -62,9 +64,15 @@ for face_rect in faces:
     bb_points.append(points)
 
 face_keypoints = keypoints(img, faces, no_faces)
+
+al = face_aligner.face_aligner(img, faces, face_keypoints)
+
+al.display()
+
 if no_faces > 0:
     display(img_copy, no_faces, bb_points, face_keypoints)
 
     
+
 
                                        
