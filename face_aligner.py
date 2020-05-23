@@ -12,7 +12,18 @@ class face_aligner():
         self.face_height = face_width
         self.desired_left_eye = (0.35, 0.35)
 
-        self.aligned_face = self.align(self.faces[0], self.keypoints[0])
+        no_faces = len(faces)
+        
+        count = 0
+        self.out_faces = self.align(self.faces[0], self.keypoints[0])
+
+        if no_faces > 1:
+
+            for face in self.faces[1: ]:
+                count += 1
+                aligned_face = self.align(face, self.keypoints[count])
+                self.out_faces = np.concatenate((self.out_faces, aligned_face), axis = 0)
+                
 
 
     def align(self, face, keypoints):
@@ -53,8 +64,8 @@ class face_aligner():
         return output
 
     def display(self):
-        
-        cv2.imshow('Aligned Face', self.aligned_face)
+
+        cv2.imshow('Aligned Face(s)', self.out_faces)
         cv2.waitKey()
 
 

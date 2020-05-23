@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import dlib
 import face_aligner
 
-image_file = "images/2020-05-20 02.14.24 1.jpg"
+image_file = "images/download.jpeg"
 keypoints_predictor = "keypoints_model/shape_predictor_68_face_landmarks.dat"
 
 def rect_to_bb(rect):
