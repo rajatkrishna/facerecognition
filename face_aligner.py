@@ -3,7 +3,8 @@ import cv2
 import numpy as np
 
 class face_aligner():
-    def __init__(self, img, faces, keypoints, face_width = 224):
+    
+    def __init__(self, img, faces, keypoints, no_faces, face_width = 224):
 
         self.faces = faces
         self.img = img
@@ -11,19 +12,21 @@ class face_aligner():
         self.face_width = face_width
         self.face_height = face_width
         self.desired_left_eye = (0.35, 0.35)
-
-        no_faces = len(faces)
+        self.no_faces = no_faces
+        
+        self.out_faces = np.zeros((self.no_faces, self.face_height, self.face_width), dtype = np.uint8)
         
         count = 0
-        self.out_faces = self.align(self.faces[0], self.keypoints[0])
-
-        if no_faces > 1:
-
-            for face in self.faces[1: ]:
-                count += 1
-                aligned_face = self.align(face, self.keypoints[count])
-                self.out_faces = np.concatenate((self.out_faces, aligned_face), axis = 0)
+        for face in self.faces:
+            aligned_face = self.align(face, self.keypoints[count])
+            self.out_faces[count] = aligned_face
+            count += 1
                 
+    def get_aligned_faces(self, display = False):
+        if display:
+            self.display()
+        
+        return (self.out_faces)
 
 
     def align(self, face, keypoints):
@@ -60,13 +63,13 @@ class face_aligner():
         M[1, 2] += (tY - eyes_center[1])
 
         output = cv2.warpAffine(self.img, M, (self.face_width, self.face_height))
-
         return output
 
     def display(self):
-
-        cv2.imshow('Aligned Face(s)', self.out_faces)
-        cv2.waitKey()
+        
+        for i in range(self.no_faces):
+            cv2.imshow('Aligned Face({})'.format(i + 1), self.out_faces[i])
+            cv2.waitKey()
 
 
         
