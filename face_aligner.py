@@ -1,35 +1,16 @@
-import dlib
 import cv2
 import numpy as np
 
 class face_aligner():
     
-    def __init__(self, img, faces, keypoints, no_faces, face_width = 224):
+    def __init__(self, face_width = 160):
 
-        self.faces = faces
-        self.img = img
-        self.keypoints = keypoints
         self.face_width = face_width
         self.face_height = face_width
         self.desired_left_eye = (0.35, 0.35)
-        self.no_faces = no_faces
-        
-        self.out_faces = np.zeros((self.no_faces, self.face_height, self.face_width), dtype = np.uint8)
-        
-        count = 0
-        for face in self.faces:
-            aligned_face = self.align(face, self.keypoints[count])
-            self.out_faces[count] = aligned_face
-            count += 1
-                
-    def get_aligned_faces(self, display = False):
-        if display:
-            self.display()
-        
-        return (self.out_faces)
 
 
-    def align(self, face, keypoints):
+    def align(self, img, face, keypoints):
 
         left_eye_start = 42
         left_eye_end = 48
@@ -62,14 +43,11 @@ class face_aligner():
         M[0, 2] += (tX - eyes_center[0])
         M[1, 2] += (tY - eyes_center[1])
 
-        output = cv2.warpAffine(self.img, M, (self.face_width, self.face_height))
+        output = cv2.warpAffine(img, M, (self.face_width, self.face_height))
+        output = cv2.cvtColor(output, cv2.COLOR_BGR2RGB)
         return output
 
-    def display(self):
-        
-        for i in range(self.no_faces):
-            cv2.imshow('Aligned Face({})'.format(i + 1), self.out_faces[i])
-            cv2.waitKey()
+
 
 
         

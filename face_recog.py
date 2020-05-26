@@ -25,6 +25,6 @@ class face_recog():
         face_embedding = pd.DataFrame(face_embedding)
         pred = self.model.predict(face_embedding)
 
-        return idx2class[pred]
+        return self.idx2class[pred.item()]
 
 

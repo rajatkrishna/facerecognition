@@ -12,7 +12,7 @@ import numpy as np
 train_image_classes = glob.glob("train_images/*")
 train_image_classes = [re.findall("(?<=train_images/).*", c)[0] for c in train_image_classes]
 
-class2idx = {}
+idx2class = {}
 idx = 0 
 
 face_data = pd.DataFrame()
@@ -20,7 +20,7 @@ resnet = InceptionResnetV1(pretrained = 'vggface2').eval()
 
 for image_class in train_image_classes:
     
-    class2idx[image_class] = idx
+    idx2class[idx] = image_class
     
     train_image_files = glob.glob("train_images/" + image_class + "/*")
 
@@ -31,7 +31,6 @@ for image_class in train_image_classes:
         face_detector = face_det(image_file = train_image_file, 
                                  keypoints_predictor = "keypoints_model/shape_predictor_68_face_landmarks.dat",
                                  threshold = 0.25,
-                                 display = False,
                                  display_aligned = False)
         
         if face_detector.no_faces == 0:
@@ -62,7 +61,7 @@ tar = face_data[face_data.columns[[-1]]].values.ravel()
 model.fit(feat, tar)
 
 with open('classifier/SVM.pkl', 'wb') as modfile:
-    pickle.dump((class2idx, model), modfile)
+    pickle.dump((idx2class, model), modfile)
 
     
     

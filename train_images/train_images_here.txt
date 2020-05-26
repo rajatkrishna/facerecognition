@@ -1,0 +1,1 @@
+Save images of each person to be identified here in folders with the corresponding names.
